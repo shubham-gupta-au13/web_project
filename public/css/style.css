@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+body{
+
+    font-size: 67.5%;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* flex */
+
+
+
+h1{
+
+    text-align: center;
+    margin-top: 4rem;
+}
+
+h3{
+    background-color: rgb(187, 223, 238);
+    padding: 0.7rem 1rem;
+    color: rgb(76, 174, 209);
+    margin-top: -1px;
+    margin-right: -1px;
+}
+
+.container{
+
+    width: 500px;
+    border: 2px solid skyblue;
+    margin: 4rem auto;
+    
+}
+
+.form{
+    
+    margin-top: 2rem;
+    padding: 2rem;
+}
+
+.A{
+
+    display: flex;
+    justify-content: space-around;
+
+}
+
+.form .A input{
+
+    
+    height: 1.8rem;
+    margin-bottom: 1rem;
+    border: 2px solid grey;
+    border-radius: 5px;
+    flex: 2;
+}
+
+label{
+
+    font-weight: 600;
+    font-size: 0.9rem;
+    flex: 1;
+}
+
+button{
+
+    padding: 0.5rem 0.7rem;
+    border: none;
+    background-color:#4267B2;
+    color: #FFFFFF;
+    border-radius: 2px;
+    cursor: pointer;
+    border: 2px solid #4267B2;
+    margin: 1rem auto;
+    display: block;
+}
+
+p{
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+a{
+    text-decoration: none;
+}
+
+center{
+
+    font-size: 1rem;
+    font-weight: 500;
+    color: red;
+    margin-top: 2rem;
+    font-family: cursive;
+}
