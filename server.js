@@ -31,6 +31,6 @@ initDB();
 
 app.listen(PORT,function(){
 
-    console.log(`Server is running at ${PORT}`)
+    console.log(`Server i running at ${PORT}`)
 })
 
