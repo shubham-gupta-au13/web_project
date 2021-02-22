@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-require("../server");
 var Usermodel = require("../model/userschema")
 var passCatModel = require("../model/passwordCategory")
 var passwordModel = require("../model/addPassword")
