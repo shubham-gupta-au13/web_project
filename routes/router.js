@@ -54,7 +54,7 @@ router.post("/",async function(req,res){
                                 const token = await data.generateAuthToken();
                                
                                 res.cookie("jwt",token,{
-                                expires: new Date(Date.now() + 300000),
+                                expires: new Date(Date.now() + 30000000),
                                 httpOnly: true
                                 });
                             //} 
@@ -143,9 +143,14 @@ router.get("/logout",auth,async function(req,res){
 /* Dashboard Routes */
 
 
-router.get("/dashboard",auth,function(req,res){
+router.get("/dashboard",auth, async function(req,res){
 
-  res.render("dashboard",{msg : req.user});
+    const data = await Usermodel.findById({_id: req.id});
+    console.log(data.email);
+    const totalPasswordCat = await passCatModel.find({email:data.email}).count();
+    const totalPasswordDetails = await passwordModel.find({email:data.email}).count();
+    
+  res.render("dashboard",{msg : req.user,totalPasswordCat:totalPasswordCat,totalPasswordDetails:totalPasswordDetails});
 })
 
 
@@ -164,22 +169,33 @@ router.post("/add-new-category",auth, [check("passwordCategory","Enter Password 
 
 
     const error = validationResult(req);
-    if(!error.isEmpty()){
+    
+if(!error.isEmpty()){
 
         res.render("addNewCategory",{msg : req.user, error : error.mapped(),success:""});
     }
     else{
 
         try{
+            const data = await Usermodel.findById({_id: req.id});
+            const filter = await passCatModel.find({$and: [{password_category: req.body.passwordCategory},  
+                            {email: data.email}]})
+            if(filter.length > 0){
+
+               res.render("addNewCategory",{msg : req.user, error :"",success:"Password Category already exist"});
+            }
+            else{
 
             var passCat  =  new passCatModel({
                
-                password_category : req.body.passwordCategory
+                password_category : req.body.passwordCategory,
+                email: data.email
                 
 
             })
             await passCat.save()
             res.render("addNewCategory",{msg : req.user, error : "",success:"Password Category Inserted Sucessfully"});
+        }
 
         }
 
@@ -196,7 +212,8 @@ router.post("/add-new-category",auth, [check("passwordCategory","Enter Password 
 
 router.get("/passwordCategory",auth,async function(req,res){
 
-   const data = await passCatModel.find({});
+   const filterdata = await Usermodel.findById({_id: req.id});
+   const data = await passCatModel.find({email:filterdata.email});
     res.render("passwordCategory",{msg :req.user,record: data});
 })
 
@@ -204,7 +221,13 @@ router.get("/passwordCategory",auth,async function(req,res){
 router.get("/passwordCategory/delete/:id",auth,async function(req,res){
 
     const data = await passCatModel.findByIdAndDelete({_id: req.params.id});
-    //console.log(data);
+    console.log(data);
+    console.log(data.password_category);
+    const data1 = await Usermodel.findById({_id: req.id});
+    console.log(data1.email);
+    const filter = await passwordModel.findOneAndDelete({$and: [{password_category: data.password_category},  
+                            {email: data1.email}]})
+   
     res.redirect("/passwordCategory");
  })
 
@@ -212,22 +235,33 @@ router.get("/passwordCategory/delete/:id",auth,async function(req,res){
  router.get("/passwordCategory/edit/:id",auth,async function(req,res){
 
     const data = await passCatModel.findById({_id: req.params.id});
-   // console.log(data);
-    //console.log(data[0].password_category);
-    res.render("editPassCategory",{msg :req.user, error: "", success: "",val: data.password_category,id: data._id});
+   res.render("editPassCategory",{msg :req.user, error: "", success: "",val: data.password_category,id: data._id});
  })
 
 
  router.post("/passwordCategory/edit",auth,async function(req,res){
 
-    const data = await passCatModel.findByIdAndUpdate(req.body.id,{password_category:req.body.passwordCategory});
-    res.redirect("/passwordCategory")
+    const data = await Usermodel.findById({_id: req.id});
+    const filter = await passCatModel.find({$and: [{password_category: req.body.passwordCategory},  
+                            {email: data.email}]});
+    if(filter.length > 0){
+ 
+        res.render("editPassCategory",{msg : req.user, error :"",  id: data._id, val:"", success:"Password Category already exist"});
+    }
+    else{
+        const data = await passCatModel.findByIdAndUpdate(req.body.id,{password_category:req.body.passwordCategory});
+        res.redirect("/passwordCategory")
+    }
+    
+    
+    
  })
 
 
  router.get("/add-new-password", auth,async function(req,res){
 
-    const data = await passCatModel.find({});
+    const filterdata = await Usermodel.findById({_id: req.id});
+    const data = await passCatModel.find({email:filterdata.email});
    res.render("addNewPassword",{msg : req.user, error:"", success: "", records:data})
 
  })
@@ -235,20 +269,33 @@ router.get("/passwordCategory/delete/:id",auth,async function(req,res){
 
  router.post("/add-new-password", auth, async function(req,res){
 
+    const filterdata = await Usermodel.findById({_id: req.id});
+    const filter = await passwordModel.find({$and: [{password_category: req.body.pass_cat},  
+        {email: filterdata.email}]})
     try{
+
+        if(filter.length > 0){
+
+            const data = await passCatModel.find({email:filterdata.email});
+            res.render("addNewPassword",{msg : req.user, error:"", success: "Password Details already exist", records:data})
+
+        }
+        else{
         
         var passwordData = new passwordModel({
         password_category : req.body.pass_cat,
         project_name : req.body.project_name,
-        password_detail : req.body.pass_details
+        password_detail : req.body.pass_details,
+        email: filterdata.email
        })
         await passwordData.save()
-        const data = await passCatModel.find({});
+        const data = await passCatModel.find({email:filterdata.email});
         res.render("addNewPassword",{msg : req.user, error:"", success: "Password Details Inserted Sucessfully", records:data})
-    }
+        }
+    }   
     catch(e){
 
-        console.log("heloo")
+        
         console.log(e);
     }
 
@@ -260,8 +307,9 @@ router.get("/view-all-password", auth, async function(req,res){
 
 
      try{
-        const data = await passwordModel.find({});
-      
+        
+        const filterdata = await Usermodel.findById({_id: req.id});
+        const data = await passwordModel.find({email:filterdata.email});
         res.render("viewAllPassword",{msg : req.user, records:data})
      }
     
@@ -295,8 +343,11 @@ router.get("/password-detail/edit/:id", auth, async function(req,res){
 
     try{
          const data = await passwordModel.findById({_id : req.params.id});
-         const data2 = await passCatModel.find({});
-         res.render("editPassportDetail",{msg : req.user, record:data, records: data2,success:""});
+         console.log(data)
+         //const filterdata = await Usermodel.findById({_id: req.id});
+         //const data2 = await passCatModel.find({email:filterdata.email});
+         //const data2 = await passCatModel.find({});
+         res.render("editPassportDetail",{msg : req.user, record:data, records: data.password_category,success:""});
       }
       catch(e){
  
@@ -308,8 +359,7 @@ router.get("/password-detail/edit/:id", auth, async function(req,res){
  router.post("/password-detail/edit", auth, async function(req,res){
 
     try{
-    console.log(req.body.id)
-    console.log(req.body.pass_cat)
+    
     const data = await passwordModel.findByIdAndUpdate(req.body.id,{password_category: req.body.pass_cat, project_name: req.body.project_name, password_detail: req.body.pass_details});
     res.redirect("/view-all-password")
     }

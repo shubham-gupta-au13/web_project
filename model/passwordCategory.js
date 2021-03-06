@@ -6,12 +6,14 @@ const passCatSchema = new mongoose.Schema({
    
        type: String,
        required: true,
-       trim: true,
-       index:{
-    
-           unique: true
-       }
+       trim: true
+       
     },
+    email : {
+
+        type: String
+    },
+
     date : {
 
         type: Date,

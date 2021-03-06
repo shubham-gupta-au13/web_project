@@ -7,23 +7,17 @@ const passwordSchema = new mongoose.Schema({
        type: String,
        required: true,
        trim: true,
-       index:{
-    
-           unique: true
-       }
+      
     },
+
+
 
     project_name:{
 
        type: String,
        required: true,
        trim: true,
-       index:{
-    
-           unique: true
-    }
-
-    },
+     },
 
     password_detail :{
 
@@ -32,6 +26,11 @@ const passwordSchema = new mongoose.Schema({
        required: true,
        trim: true
 
+    },
+
+    email : {
+
+        type: String,
     },
 
     date : {
