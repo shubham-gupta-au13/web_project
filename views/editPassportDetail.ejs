@@ -10,13 +10,13 @@
                 <div class="panel-body" >
                     <form action="/password-detail/edit" id="passwordform" class="form-horizontal" method="post"  role="form">
                       <% if(success !=''){%> 
-                        <center style="text-align: center;color:green;"><%= success %></center>
+                        <center style="text-align: center;color:red;"><%= success %></center>
                         <%}%>
                       <div class="form-group">
                                 <label for="username" class="col-md-3 control-label">Password Category</label>
                                 <div class="col-md-9">
                                    <select class="form-control" name="pass_cat">
-                                       <option value="">Choose Password Category</option>
+                                      
                                       
                                        <option><%= records %></option>
                                       

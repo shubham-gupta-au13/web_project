@@ -37,5 +37,20 @@ validEmail = async function(req,res,next){
                 
 }
 
+checkLen = function(input){
+
+    if(input.length == 0){
+
+        return 0
+
+    }
+    else{
+
+        return 1;
+
+    }
+    
+}   
+
 
 module.exports = {validUser,validEmail}

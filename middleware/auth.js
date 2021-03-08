@@ -14,6 +14,7 @@ const auth = async function(req,res,next){
 
     }
     catch(e){
+        console.log("bye");
         res.status(401).redirect("/");
     }
 }

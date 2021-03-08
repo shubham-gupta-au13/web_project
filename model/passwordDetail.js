@@ -10,8 +10,6 @@ const passwordSchema = new mongoose.Schema({
       
     },
 
-
-
     project_name:{
 
        type: String,

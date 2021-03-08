@@ -10,30 +10,18 @@
                     <div class="panel-title"> Edit Password Category</div>
                 </div>  
                 <div class="panel-body" >
-                    <form action="/passwordCategory/edit" id="EmployeeForm" class="form-horizontal" method="post"  role="form">
+                    <form action="/passwordCategory/edit/<%= val %>" id="EmployeeForm" class="form-horizontal" method="post"  role="form">
                       
                         <input type="hidden" name="id" value="<%= id %>">
                         <div class="form-group">
                             
                             <% if(error!= ''){ %>
                              
-                                <p style="text-align: center;color:red;"><%= error.passwordCategory.msg %></p>
+                                <p style="text-align: center;color:red;"><%= error%></p>
                         
                             
                             <% } %>
 
-                            <% if(success!= ''){ %>
-                             
-                                <p style="text-align: center;color:green;"><%= success %></p>
-                        
-                            
-                            <% } %>
-                          
-                            
-
-                            
-                              
-                               
                             <label for="username" class="col-md-3 control-label">Category Name</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" name="passwordCategory" value="<%= val %>">
